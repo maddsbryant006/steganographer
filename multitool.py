@@ -5,17 +5,21 @@ import pdf_encoder_decoder
 import commit_encoder_decoder
 
 def main_options():
+    print("------------------------------------------")
     print("Welcome to the Multi-Tool Steganographer")
+    print("------------------------------------------")
     print("1. Image")
     print("2. Audio")
     print("3. QR Code")
     print("4. PDF")
     print("5. Git Commits")
     print("6. Exit")
+    print("------------------------------------------")
 
 def options():
     print("1. Encode")
     print("2. Decode")
+    print("------------------------------------------")
 
 def main():
     #main function for user option to encode or decode an image or audio
