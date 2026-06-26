@@ -21,7 +21,7 @@ def encode_audio():
     audio = wave.open(aud, 'r')
     text = input("Phrase to be encoded: ")
 
-    newAud = audio.copy()
+    newAud = audio.copy() #bug here
     encrypt_phrase(newAud, text)
     newAudFile = input("Input encrypted files name: ")
     newAud.save(newAudFile, newAudFile.split(".")[-1].upper())
