@@ -1,8 +1,12 @@
 import audio_encoder_decoder 
 import image_encoder_decoder
 import qr_encoder_decoder
+import uni_encoder_decoder
 import pdf_encoder_decoder
 import commit_encoder_decoder
+
+#create payload capcity calculator for image
+#after creating all encoders + decoders + gen excryption then change main to auto detect file type and call the correct encoder/decode
 
 def main_options():
     print("------------------------------------------")
@@ -11,22 +15,29 @@ def main_options():
     print("1. Image")
     print("2. Audio")
     print("3. QR Code")
-    print("4. PDF")
-    print("5. Git Commits")
-    print("6. Exit")
+    print("4. Unicode Text")
+    print("5. PDF")
+    print("6. Git Commits")
+    print("7. Exit")
     print("------------------------------------------")
 
 def options():
     print("1. Encode")
     print("2. Decode")
     print("------------------------------------------")
-
+    
+def gen_encrypt():
+    # placeholder code
+    img = input("Enter Image file (w/ Extension): ")
+    image = Image.open(img, 'r')
+    text = input("Phrase to be encoded: ")
+    
 def main():
     #main function for user option to encode or decode an image or audio
     main_options()
     user_input = int(input())
 
-    while user_input != 6:
+    while user_input != 7:
         if user_input == 1:
             options()
             user_choice = int(input())
@@ -70,6 +81,17 @@ def main():
             options()
             user_choice = int(input())
             if user_choice == 1:
+                uni_encoder_decoder.encode_pdf()
+            elif user_choice == 2:
+                uni_encoder_decoder.decode_pdf()
+            else:
+                print("Please enter a valid option")
+                options()
+                user_choice = int(input())
+        elif user_input == 5:
+            options()
+            user_choice = int(input())
+            if user_choice == 1:
                 pdf_encoder_decoder.encode_pdf()
             elif user_choice == 2:
                 pdf_encoder_decoder.decode_pdf()
@@ -79,7 +101,7 @@ def main():
                 user_choice = int(input())
             main_options()
             user_input = int(input())
-        elif user_input == 5:
+        elif user_input == 6:
             options()
             user_choice = int(input())
             if user_choice == 1:
