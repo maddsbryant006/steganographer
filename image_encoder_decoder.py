@@ -1,6 +1,7 @@
 import os
 from PIL import Image
 import aes_encryption
+import base64
 
 def binary_conv(data):
     # convert data into list of 8-bit binary strings
@@ -76,6 +77,10 @@ def decode_image():
         if pixels[-1] % 2 != 0:
             break
         
+<<<<<<< HEAD
+=======
+    
+>>>>>>> test-image-branch
     
     
     return print(f'Decoded text: {decrypted_data}')

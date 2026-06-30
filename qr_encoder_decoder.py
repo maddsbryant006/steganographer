@@ -1,3 +1,4 @@
+import os
 from PIL import Image
 
 def binary_conv(phrase):
@@ -45,6 +46,8 @@ def encrypt_phrase(image, phrase):
 def encode_qr():
     # encode an image uploaded by user
     img = input("Enter QR code (w/ Extension): ")
+    file_size = os.path.getsize(img)
+    print(f"File Size: {file_size}")
     image = Image.open(img, 'r')
     text = input("Phrase to be encoded: ")
 

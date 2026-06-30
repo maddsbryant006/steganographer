@@ -4,6 +4,8 @@ key = Fernet.generate_key()
 cipher = Fernet(key)
 
 def encrypt(data):
+    key = Fernet.generate_key()
+    cipher = Fernet(key)
     
     og_data = data.encode('utf-8')
     
