@@ -1,13 +1,14 @@
 from PIL import Image
+import aes_encryption
 
-def binary_conv(phrase):
+def binary_conv(data):
     # convert phrase into list of 8-bit binary strings
-    return [format(ord(i), '08b') for i in phrase]
+    return [format(ord(i), '08b') for i in data]
 
 
-def modify_pix(pix, phrase):
+def modify_pix(pix, data):
     # modify pixel values based on binary
-    binList = binary_conv(phrase)
+    binList = binary_conv(data)
     length = len(binList)
     imgData = iter(pix)
 
@@ -42,21 +43,22 @@ def encrypt_phrase(image, phrase):
         x = 0 if x == w - 1 else x + 1
         y += 1 if x == 0 else 0
 
-def encode_image():
+def encode_qr():
     # encode an image uploaded by user
-    img = input("Enter Image file (w/ Extension): ")
+    img = input("Enter file (w/ Extension): ")
     image = Image.open(img, 'r')
-    text = input("Phrase to be encoded: ")
+    text = input("Data to be encoded: ")
+    encrypted_text = aes_encryption.encrypt(text)
 
     newImg = image.copy()
-    encrypt_phrase(newImg, text)
+    encrypt_phrase(newImg, encrypted_text)
     newImgFile = input("Input encrypted files name: ")
     newImg.save(newImgFile, newImgFile.split(".")[-1].upper())
 
 
-def decode_image():
+def decode_qr():
     # decode an image uploaded by user
-    img = input("Enter Image file (w/ Extension): ")
+    img = input("Enter file (w/ Extension): ")
     image = Image.open(img, 'r')
     text = iter(image.getdata())
     phrase = ''
@@ -64,10 +66,12 @@ def decode_image():
     while True:
         pixels = [value for value in next(text)[:3] + next(text)[:3] + next(text)[:3]]
         binStr = ''.join(['1' if i % 2 else '0' for i in pixels[:8]])
-        phrase += chr(int(binStr, 2))
+        data += chr(int(binStr, 2))
 
         if pixels[-1] % 2 != 0:
             break
+        
+    decrypted_data = aes_encryption.decrypt(data)
     
-    return print(f'Decoded text: {phrase}')
+    return print(f'Decoded text: {decrypted_data}')
     
