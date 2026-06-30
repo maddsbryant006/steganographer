@@ -1,49 +1,54 @@
 import wave
+from pydub import AudioSegment
 
+def flac_to_wav(file):
+    load = AudioSegment.from_file(file, format="flac")
+    new_file_name = input("Enter file name as '.wav': ")
 
-def encrypt_phrase(audio, phrase):
-    # embedded phrase into audio
-    bytes = bytearray(list(audio.readframes(audio.readframes())))
-
-    phrase += '[END]'
-    bits = ''.join(format(ord(char), '08b') for char in phrase)
-
-    if len(bits) > len(bytes):
-        raise ValueError("Message is too long for current file")
-    
-    for i, bit in enumerate(bits):
-        bytes[i] = (bytes[i] & 254) | int(bit)
-
+    new_file = load.export(new_file_name, format="wav")
+    return new_file
 
 def encode_audio():
     # encode audio uploaded by user
     aud = input("Enter Audio file (w/ Extension): ")
-    audio = wave.open(aud, 'r')
-    text = input("Phrase to be encoded: ")
-
-    newAud = audio.copy() #bug here
-    encrypt_phrase(newAud, text)
-    newAudFile = input("Input encrypted files name: ")
-    newAud.save(newAudFile, newAudFile.split(".")[-1].upper())
+    
+    if ".flac" in aud :
+        aud = flac_to_wav(aud)
+        
+        
+    with wave.open(aud, 'r') as audio:
+        audio_bytes = bytearray(list(audio.readframes(audio.getnframes()))) # TypeError: 'bytearray' object is not callable
+    data = input("Phrase to be encoded: ")
+    
+    data += "###"
+    
+    data_bytes = "".join(format(ord(i), '08b') for i in data)
+    
+    for i, bit in enumerate(data_bytes):
+        audio_bytes[i] = (audio_bytes[i] & 254) | int(bit)
+        
+    modified_data = bytes(audio_bytes)
+    
+    newAudFile = input("Input encrypted file name: ")
+    
+    with wave.open(newAudFile, 'w') as export:
+        export.setparams(audio.getparams())
+        export.writeframes(modified_data)
 
 
 def decode_audio():
+    phrase = ' '
     # decode audio uploaded by user
     aud = input("Enter Audio file (w/ Extension): ")
-    audio = wave.open(aud, 'r')
-    text = iter(audio.getdata())
-    phrase = ''
+    with wave.open(aud, 'r') as audio:
+        audio_bytes = bytearray(list(audio.readframes(audio.getnframes())))
+        
+    extract_bytes = [str(audio_bytes[i] & 1) for i in range(len(audio_bytes))]
+    extract_data = ''.join(extract_bytes)
+    
+    data_bytes = [extract_data[i:i+8] for i in range(0, len(extract_data), 8)]
+    decode_data = ''.join(chr(int(b, 2)) for b in data_bytes)
+    
+    data = decode_data.split("###") [0]
 
-    bytes = bytearray(list(audio.readframes(audio.readframes())))
-
-    bits = [str(bytes & 1) for bytes in bytes]
-    bits = ''.join(bits)
-
-    for i in range(0, len(bits), 8):
-        byte = bits[i:i + 8]
-        if len(byte) < 8: break
-        phrase += chr(int(byte, 2))
-        if phrase.endswith('[END]'):
-            audio.close()
-
-    return print(f'Decoded text: {phrase[:-5]}')
+    return print(f'Decoded data: {data}')
