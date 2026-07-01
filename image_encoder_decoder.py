@@ -76,11 +76,5 @@ def decode_image():
 
         if pixels[-1] % 2 != 0:
             break
-        
-<<<<<<< HEAD
-=======
-    
->>>>>>> test-image-branch
-    
     
     return print(f'Decoded text: {decrypted_data}')

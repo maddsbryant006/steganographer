@@ -1,12 +1,17 @@
 import wave
-from pydub import AudioSegment
+import io
+import soundfile
 
 def flac_to_wav(file):
-    load = AudioSegment.from_file(file, format="flac")
-    new_file_name = input("Enter file name as '.wav': ")
-
-    new_file = load.export(new_file_name, format="wav")
-    return new_file
+    data, samplerate = soundfile.read(file)
+     
+    new_wav = io.BytesIO()
+     
+    soundfile.write(new_wav, data, samplerate, format='WAV', subtype='PCM_16')
+    
+    new_wav.seek(0)
+    
+    return new_wav
 
 def encode_audio():
     # encode audio uploaded by user
